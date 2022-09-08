@@ -15,7 +15,7 @@ context('Assertions', () => {
         .first()
         // checking the text of the <td> element in various ways
         .should('have.text', 'Column content')
-        .should('contain', 'Column content')
+        .should('contain', 'Column contentt')
         .should('have.html', 'Column content')
         // chai-jquery uses "is()" to check if element matches selector
         .should('match', 'td')
