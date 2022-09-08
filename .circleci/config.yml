@@ -1,0 +1,59 @@
+version: 2.1
+
+orbs:
+  cypress: cypress-io/cypress@2.2.0
+
+executors:
+  latest-chrome-ff:
+    docker:
+      - image: cypress/browsers:node16.14.0-chrome99-ff97
+
+parameters:
+  groups:
+    type: string
+    default: 'group1 group2 group3 group4 group5'
+
+jobs:
+
+  checkout:
+    executor: latest-chrome-ff
+    steps:
+      - checkout
+      - run:
+          name: install NPM dependencies
+          command: |
+            npm ci
+      - run: npm run cy:verify
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project
+            - .local
+            - .cache/Cypress
+
+workflows:
+  version: 2.1
+
+  test:
+    jobs:
+
+      - checkout
+
+      - cypress/run:
+          name: cypress_tests
+          requires:
+            - checkout
+          executor: latest-chrome-ff
+          browser: chrome
+          pre-steps:
+            - attach_workspace:
+                at: ~/
+          record: true
+          parallel: true
+          parallelism: 5
+          command: |
+            for i in <<pipeline.parameters.groups>>; do
+              export GROUP=$i
+              npm run test:ci -- --group '${GROUP}-tests' --spec '**/${GROUP}/**/*.cy.js'
+            done
+          timeout: 15m

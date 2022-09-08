@@ -1,0 +1,14 @@
+{
+  "name": "cypress-parallel-runs",
+  "version": "1.0.0",
+  "description": "Repo to reproduce an issue with parallel runs.",
+  "main": "index.js",
+  "scripts": {
+    "cy:verify": "cypress verify",
+    "test": "cypress open",
+    "test:ci": "cypress run --browser chrome --record --parallel"
+  },
+  "dependencies": {
+    "cypress": "^10.7.0"
+  }
+}
